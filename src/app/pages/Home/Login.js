@@ -10,15 +10,17 @@ import React, { useState } from "react";
 import Layout from "./Layout";
 import "./index.css";
 import axios from "axios";
-import { Routes, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../router/Routes";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
-let navigate = useNavigate;
+
   const onChange = (e) => {
     const { value, name } = e.target;
     setUser((state) => ({
@@ -27,18 +29,19 @@ let navigate = useNavigate;
     }));
   };
 
-  const Login = () =>{
-    axios.post('http://localhost:3000/bloglogin', user)
-    .then(function (response) {
-      if (response.data.token) {
-        localStorage.setItem("User", JSON.stringify(response.data));
-      }
-      navigate(ROUTES.BLOG,{replace:true})
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  }
+  const Login = () => {
+    axios
+      .post("http://localhost:3000/bloglogin", user)
+      .then(function (response) {
+        if (response.data.token) {
+          localStorage.setItem("User", JSON.stringify(response.data));
+        }
+        navigate(ROUTES.BLOGS, { replace: true });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
   return (
     <Layout>

@@ -9,5 +9,5 @@ export const ROUTES = {
   SETTINGS: "/settings/",
   PROFILE: (userId) => `/writer/${userId}/`,
   CREATE_BLOG: "/blogs/create",
-  EDIT_BLOG: `/blogs/:id/edit`,
+  EDIT_BLOG: `/blogs/edit/:id`,
 };

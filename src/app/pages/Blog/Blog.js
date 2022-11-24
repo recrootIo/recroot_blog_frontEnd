@@ -1,33 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import "./index.css";
+import axios from "../../API/axios";
+import { useParams } from "react-router-dom";
+import { Chip, Stack, Typography } from "@mui/material";
+import ReactQuill from "react-quill";
+import { isEmpty } from "lodash";
 
-const Blog = ({ ...props }) => {
-  const { content, title } = props;
+const Blog = () => {
+  const [blog, setBlog] = useState({});
+  const { id } = useParams();
+
+  const getBlog = () => {
+    axios.get(`/getBlog/${id}`).then((res) => setBlog(res.data[0]));
+  };
+
+  useEffect(() => {
+    getBlog();
+  }, []);
+
   return (
     <div className="Feed ReadBlog">
       <Navbar />
-      <div className="Blogs">
-        <h2 className="blog-portal-head">Read Blog</h2>
-        <article className="Blog">
-          <header className="Blog-Head">
-            <div className="Blog-Head-left">
+      {isEmpty(blog) ? null : (
+        <div className="Blogs">
+          <h2 className="blog-portal-head">Read Blog</h2>
+          <article className="Blog">
+            <Stack spacing={4}>
               <img
-                // src={blog?.author?.dp}
-                // onError={(e) => (e.target.src = writerPlaceholder)}
+                src={`${process.env.REACT_APP_URL}/api/getCompanyPhotos?compPhotos=${blog?.blogImage}`}
                 alt="dp"
+                width={"100%"}
+                height={"50%"}
               />
-              <span>
-                <h3>{title}</h3>
-              </span>
-            </div>
-          </header>
-          <div
-            className="Blog-Body"
-            dangerouslySetInnerHTML={{ __html: content }}
-          ></div>
-        </article>
-      </div>
+              <Typography variant="h5">{blog?.title}</Typography>
+              <Stack direction={"row"} spacing={2}>
+                {blog?.tags.map((tag) => (
+                  <Chip label={`#${tag}`} key={tag} />
+                ))}
+              </Stack>
+              <ReactQuill
+                value={blog?.description}
+                readOnly={true}
+                theme={"bubble"}
+              />
+            </Stack>
+          </article>
+        </div>
+      )}
     </div>
   );
 };

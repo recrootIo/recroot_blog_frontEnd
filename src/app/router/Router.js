@@ -4,7 +4,6 @@ import Login from "../pages/Home/Login";
 import Signup from "../pages/Home/Signup";
 import Blogs from "../pages/Blogs/Blogs";
 import CreateBlog from "../pages/CreateBlogs/CreateBlog";
-import Search from "../pages/Search/Search";
 import Blog from "../pages/Blog/Blog";
 import EditBlog from "../pages/EditBlog/EditBlog";
 import Error404 from "../pages/NotFound/Error404";

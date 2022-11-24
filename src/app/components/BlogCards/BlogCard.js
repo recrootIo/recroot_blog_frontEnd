@@ -4,11 +4,15 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
+  Chip,
+  Collapse,
   IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
+  Stack,
+  Typography,
 } from "@mui/material";
 import React from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -16,10 +20,13 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import ReactQuill from "react-quill";
 
 const BlogCard = ({ ...props }) => {
   const navigation = useNavigate();
-  const { title, id } = props;
+  const { title, _id, description, blogImage, tags, category, deleteBlog } =
+    props;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -33,15 +40,20 @@ const BlogCard = ({ ...props }) => {
   };
 
   const handleNavigate = () => {
-    navigation(`/blogs/${id}`);
+    navigation(`/blogs/${_id}`);
   };
 
   const handleNavigateEdit = () => {
-    navigation(`/blogs/${id}/edit`);
+    navigation(`/blogs/edit/${_id}`);
+  };
+
+  const removeBlog = (id) => {
+    deleteBlog(id);
+    handleClose();
   };
 
   return (
-    <Card variant="outlined" sx={{}}>
+    <Card variant="outlined" sx={{ width: "325px" }}>
       <CardHeader
         action={
           <>
@@ -74,7 +86,7 @@ const BlogCard = ({ ...props }) => {
                 </ListItemIcon>
                 <ListItemText>Edit</ListItemText>
               </MenuItem>
-              <MenuItem onClick={handleClose}>
+              <MenuItem onClick={() => removeBlog(_id)}>
                 <ListItemIcon>
                   <DeleteForeverOutlinedIcon fontSize="small" color="warning" />
                 </ListItemIcon>
@@ -87,12 +99,45 @@ const BlogCard = ({ ...props }) => {
       <CardMedia
         component="img"
         height="194"
-        image="https://akm-img-a-in.tosshub.com/businesstoday/images/story/202010/jobs_660_130920052343_291020052310.jpg?size=1200:675"
+        image={`${process.env.REACT_APP_URL}/api/getCompanyPhotos?compPhotos=${blogImage}`}
         alt="Paella dish"
       />
-      <CardContent>{title}</CardContent>
+      <CardContent>
+        <Stack spacing={3}>
+          <Stack direction={"row"} justifyContent={"space-between"}>
+            <Typography variant="h6">{title}</Typography>
+            <Typography variant="body2">{category}</Typography>
+          </Stack>
+          <Stack direction={"row"} spacing={1}>
+            {tags.map((tag) => (
+              <Chip label={`#${tag}`} key={tag} />
+            ))}
+          </Stack>
+          <Collapse collapsedSize={100}>
+            <ReactQuill value={description} readOnly={true} theme={"bubble"} />
+          </Collapse>
+        </Stack>
+      </CardContent>
     </Card>
   );
+};
+
+BlogCard.defaultProps = {
+  _id: "",
+  title: "",
+  category: "",
+  tags: [],
+  blogImage: "",
+  deleteBlog: () => {},
+};
+
+BlogCard.propTypes = {
+  _id: PropTypes.string,
+  title: PropTypes.string,
+  category: PropTypes.string,
+  tags: PropTypes.array,
+  blogImage: PropTypes.string,
+  deleteBlog: PropTypes.func,
 };
 
 export default BlogCard;

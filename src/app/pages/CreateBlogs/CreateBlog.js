@@ -1,12 +1,25 @@
 import "./index.css";
-import { Editor } from "react-draft-wysiwyg";
-import { Link } from "react-router-dom";
-import { EditorState } from "draft-js";
 import Navbar from "../../components/Navbar/Navbar";
 import { ROUTES } from "../../router/Routes";
-import { Button, FormControl, Stack, TextField } from "@mui/material";
+import {
+  Button,
+  Chip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import ReactQuill from "react-quill";
+import EditorToolbar, { modules } from "../../components/Editors/EditorToolbar";
+import useBlogs from "../../Hooks/useBlogs";
+import useCategory from "../../Hooks/useCategory";
+import Alerts from "../../components/Alerts";
+import { useNavigate } from "react-router-dom";
+import { isEmpty } from "lodash";
 
 const drop = {
   textAlign: "center",
@@ -18,39 +31,119 @@ const drop = {
 };
 
 const CreateBlog = () => {
-  const [file, setFiles] = useState("");
+  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [selectedCate, setSelectedCate] = useState("");
+  const [tags, setTags] = useState([]);
+  const [manualTag, setManualTag] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const { createBlogs } = useBlogs();
+  const { getAllCategories } = useCategory();
+  const navigation = useNavigate();
 
   const { getRootProps, getInputProps, acceptedFiles } = useDropzone({
     accept: {
       "image/jpeg": [],
       "image/png": [],
     },
-
-    onDrop: (acceptedFiles) => {
-      setFiles(acceptedFiles);
-      console.log(acceptedFiles, "acceptedFiles");
-    },
   });
 
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createEmpty()
-  );
+  useEffect(() => {
+    if (isEmpty(categories)) {
+      getAllCategories()
+        .then((res) => setCategories(() => res.data))
+        .catch((error) => console.warn(error));
+    }
+  }, [getAllCategories, categories]);
 
-  const onSetEditorState = (newState) => {
-    setEditorState(newState);
+  /**
+   * Action to create a blog
+   */
+  const createBlog = () => {
+    createBlogs({ title, description, tags, blogImage: acceptedFiles[0] })
+      .then((res) => {
+        setSuccess(true);
+        handleNavigate();
+      })
+      .catch((res) => console.log(res));
   };
 
-  useEffect(() => {
-    setEditorState(() => EditorState.createEmpty());
-  }, []);
+  /**
+   * Action to Select Categories
+   * @param {*} e
+   */
+  const handleChange = (e) => {
+    setSelectedCate(e.target.value);
+  };
+
+  /**
+   * Action to Add tags to tags list
+   */
+  const addTags = () => {
+    if (manualTag) {
+      setTags((state) => [...state, manualTag]);
+      setManualTag("");
+    }
+  };
+
+  /**
+   * Action navigate to Home page
+   */
+  const handleNavigate = () => {
+    navigation(`${ROUTES.BLOGS}`);
+  };
 
   return (
     <div className="blog-portal-wrapper">
       <Navbar />
       <div className="blog-portal">
         <h2 className="blog-portal-head">Create Blog</h2>
-        <Stack spacing={3}>
-          <TextField size="large" placeholder="Type your title here..." />
+        <Stack spacing={3} justifyContent="space-between">
+          <TextField
+            size="large"
+            placeholder="Type your title here..."
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          {/* Category and Tags */}
+          <Stack direction={"row"} spacing={3}>
+            {/* Category */}
+            <FormControl fullWidth sx={{ width: "50%" }}>
+              <InputLabel id="demo-simple-select-label">Category</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Category"
+                onChange={handleChange}
+                value={selectedCate?.category || selectedCate?._id}
+              >
+                {categories.map((cate) => (
+                  <MenuItem value={cate} key={cate?._id}>
+                    {cate?.category || cate?._id}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {/* Tags */}
+            <Stack sx={{ width: "50%" }} spacing={3}>
+              <Stack direction={"row"}>
+                <TextField
+                  fullWidth
+                  size="large"
+                  placeholder="Type your Tags here..."
+                  onChange={(e) => setManualTag(e.target.value)}
+                  value={manualTag}
+                />
+                <Button onClick={() => addTags()}>Add</Button>
+              </Stack>
+              <Stack direction={"row"} spacing={1}>
+                {tags.map((tag) => (
+                  <Chip label={`#${tag}`} />
+                ))}
+              </Stack>
+            </Stack>
+          </Stack>
           <div>
             <section className="container">
               {acceptedFiles[0]?.name ? (
@@ -67,20 +160,13 @@ const CreateBlog = () => {
             </section>
           </div>
           <FormControl>
-            <Editor
-              editorState={editorState}
-              onEditorStateChange={(val) => onSetEditorState(val)}
-              wrapperClassName="richWrapper"
-              editorClassName="richEditor"
-              toolbarClassName="richToolbar"
-              placeholder="Type your content here..."
-              toolbar={{
-                inline: { inDropdown: true },
-                list: { inDropdown: true },
-                textAlign: { inDropdown: true },
-                link: { inDropdown: true },
-                history: { inDropdown: true },
-              }}
+            <EditorToolbar />
+            <ReactQuill
+              theme="snow"
+              value={description}
+              onChange={setDescription}
+              modules={modules}
+              placeholder="Add Description"
             />
           </FormControl>
         </Stack>
@@ -91,13 +177,18 @@ const CreateBlog = () => {
           spacing={3}
           sx={{ mt: "20px" }}
         >
-          <Button variant="contained" sx={{ color: "white" }}>
+          <Button
+            variant="contained"
+            sx={{ color: "white" }}
+            onClick={() => createBlog()}
+          >
             Publish
           </Button>
           <Button variant="outlined" color="warning">
             Discard
           </Button>
         </Stack>
+        <Alerts open={success} handleClose={() => setSuccess(!success)} />
       </div>
     </div>
   );

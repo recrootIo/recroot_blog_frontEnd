@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { ThemeProvider } from "@mui/material";
 import { theme } from "./app/Theme/Theme";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"; // Ri
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

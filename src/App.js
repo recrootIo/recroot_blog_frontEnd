@@ -2,6 +2,7 @@ import "./index.css";
 import "./theme.css"; // dark - antd
 import "./antd.css"; // a
 import Router from "./app/router/Router";
+import "react-quill/dist/quill.snow.css";
 
 function App() {
   return (
