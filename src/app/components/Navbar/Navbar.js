@@ -23,7 +23,6 @@ const Navbar = () => {
    * Action to Loggout
    */
   const actionLogout = () => {
-    console.log("clied");
     localStorage.removeItem("User");
     dispatch(
       openModal({ title: SUCCESS, message: "Logged out successfully!" })

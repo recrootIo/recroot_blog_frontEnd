@@ -37,7 +37,6 @@ const drop = {
 const EditBlog = () => {
   const [blog, setBlog] = useState({});
   const [categories, setCategories] = useState([]);
-  const [selectedCate, setSelectedCate] = useState(null);
   const [manualTag, setManualTag] = useState("");
   const [imageFile, setImageFile] = useState("");
   const [loading, setLoading] = useState(false);
@@ -62,7 +61,7 @@ const EditBlog = () => {
   useEffect(() => {
     if (isEmpty(categories)) {
       getAllCategories()
-        .then((res) => setCategories(() => res.data.map((r) => r?.category)))
+        .then((res) => setCategories(() => res.data.map((r) => r)))
         .catch((error) => console.warn(error));
     }
   }, [getAllCategories, categories]);
@@ -71,10 +70,7 @@ const EditBlog = () => {
    * Action to Select Categories
    * @param {*} e
    */
-  const handleChange = (e) => {
-    console.log(e);
-    // setSelectedCate(e);
-  };
+
 
   /**
    * Action to Add tags to tags list
@@ -148,7 +144,6 @@ const EditBlog = () => {
         );
       });
   };
-
   return (
     <div className="blog-portal-wrapper">
       <Navbar />
@@ -172,16 +167,14 @@ const EditBlog = () => {
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 label="Category"
-                renderValue={(selected) => selected}
-                // onChange={handleChange}
-                // defaultValue={blog?.category}
+                onChange={(e) =>
+                  setBlog((state) => ({ ...state, category: e.target.value }))
+                }
+                value={ blog?.category?._id ||blog?.category || null}
               >
-                <MenuItem selected={true} hidden={true}>
-                  {blog?.category}
-                </MenuItem>
                 {categories.map((cate) => (
-                  <MenuItem value={cate} key={cate}>
-                    {cate}
+                  <MenuItem value={cate._id} key={cate._id}>
+                    {cate.category}
                   </MenuItem>
                 ))}
               </Select>
