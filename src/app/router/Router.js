@@ -47,7 +47,6 @@ function Router() {
             path={ROUTES.BLOG}
             element={
               <VerifyRoute>
-                {" "}
                 <Blog />
               </VerifyRoute>
             }

@@ -43,7 +43,7 @@ const Login = () => {
         if (response.data.token) {
           localStorage.setItem("User", JSON.stringify(response.data));
         }
-        navigate(ROUTES.BLOGS, { replace: true });
+        navigate(ROUTES.BLOGS);
         dispatch(
           openModal({ type: SUCCESS, message: "Logged in successfully!" })
         );

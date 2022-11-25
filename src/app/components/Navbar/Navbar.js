@@ -17,7 +17,7 @@ const StyledNav = styled("nav")({
 
 const Navbar = () => {
   const dispatch = useDispatch();
-  const navigation = useNavigate();
+  const navigate = useNavigate();
 
   /**
    * Action to Loggout
@@ -28,7 +28,7 @@ const Navbar = () => {
     dispatch(
       openModal({ title: SUCCESS, message: "Logged out successfully!" })
     );
-    navigation(`${ROUTES.LOGIN}`);
+    navigate(ROUTES.LOGIN);
   };
 
   return (
@@ -58,18 +58,16 @@ const Navbar = () => {
             </Typography>
           </nav>
         </Link>
-        <Link>
-          <nav>
-            <ExitToAppIcon color="primary" fontSize="medium" />
-            <Typography
-              variant="subtitle2"
-              color="white"
-              onClick={() => actionLogout()}
-            >
-              Logout
-            </Typography>
-          </nav>
-        </Link>
+        <nav>
+          <ExitToAppIcon color="primary" fontSize="medium" />
+          <Typography
+            variant="subtitle2"
+            color="white"
+            onClick={() => actionLogout()}
+          >
+            Logout
+          </Typography>
+        </nav>
       </div>
     </div>
   );

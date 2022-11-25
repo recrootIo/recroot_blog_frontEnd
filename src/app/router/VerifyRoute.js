@@ -8,7 +8,7 @@ import { ROUTES } from "./Routes";
  */
 const VerifyRoute = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("User"));
-  if (user?.User?.email_is_verified) {
+  if (user?.User) {
     return children;
   }
 
