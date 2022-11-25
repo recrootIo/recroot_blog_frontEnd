@@ -20,6 +20,9 @@ import useCategory from "../../Hooks/useCategory";
 import Alerts from "../../components/Alerts";
 import { useNavigate } from "react-router-dom";
 import { isEmpty } from "lodash";
+import { useDispatch } from "react-redux";
+import { openModal } from "../../store/messagesSlice";
+import { SUCCESS, ERROR } from "../../components/constants";
 
 const drop = {
   textAlign: "center",
@@ -42,6 +45,7 @@ const CreateBlog = () => {
   const { createBlogs } = useBlogs();
   const { getAllCategories } = useCategory();
   const navigation = useNavigate();
+  const dispatch = useDispatch();
 
   const { getRootProps, getInputProps, acceptedFiles } = useDropzone({
     accept: {
@@ -72,8 +76,18 @@ const CreateBlog = () => {
       .then((res) => {
         setSuccess(true);
         handleNavigate();
+        dispatch(
+          openModal({ type: SUCCESS, message: "Blog is successfuly Created !" })
+        );
       })
-      .catch((res) => console.log(res));
+      .catch((res) => {
+        dispatch(
+          openModal({
+            type: ERROR,
+            message: "Could not create new Blog , something went wrong !",
+          })
+        );
+      });
   };
 
   /**

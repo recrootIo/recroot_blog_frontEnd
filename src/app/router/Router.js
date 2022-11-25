@@ -6,6 +6,7 @@ import Blogs from "../pages/Blogs/Blogs";
 import CreateBlog from "../pages/CreateBlogs/CreateBlog";
 import Blog from "../pages/Blog/Blog";
 import EditBlog from "../pages/EditBlog/EditBlog";
+import CreateCategory from "../pages/Category/CreateCategory";
 import Error404 from "../pages/NotFound/Error404";
 
 import { ROUTES } from "./Routes";
@@ -27,6 +28,12 @@ function Router() {
           <Route exact path={ROUTES.BLOG} element={<Blog />} />
           {/* Blog-Edit */}
           <Route exact path={ROUTES.EDIT_BLOG} element={<EditBlog />} />
+          {/* Create-Category */}
+          <Route
+            exact
+            path={ROUTES.CREATE_CATEGORY}
+            element={<CreateCategory />}
+          />
           {/* Page-NotFound */}
           <Route path="*" element={<Error404 />} />
         </Switch>

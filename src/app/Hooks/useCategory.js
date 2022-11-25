@@ -12,7 +12,15 @@ const useCategory = () => {
   const getAllCategories = async () => {
     return await axios.get("getCategoriesById/636667ec2b39cbd7cd644c86");
   };
-  return { getCategories, getAllCategories };
+
+  const createCategories = async (category) => {
+    return await axios.post("/addBlogCategory/636667ec2b39cbd7cd644c86", {
+      user: "636667ec2b39cbd7cd644c86}",
+      category: category,
+    });
+  };
+
+  return { getCategories, getAllCategories, createCategories };
 };
 
 export default useCategory;

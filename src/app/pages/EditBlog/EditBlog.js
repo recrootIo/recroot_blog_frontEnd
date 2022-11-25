@@ -21,6 +21,9 @@ import useCategory from "../../Hooks/useCategory";
 import { useNavigate, useParams } from "react-router-dom";
 import { isEmpty } from "lodash";
 import { Box } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { openModal } from "../../store/messagesSlice";
+import { ERROR, SUCCESS } from "../../components/constants";
 
 const drop = {
   textAlign: "center",
@@ -44,6 +47,7 @@ const EditBlog = () => {
   const { getAllCategories } = useCategory();
   const navigation = useNavigate();
   const { id } = useParams();
+  const dispatch = useDispatch();
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -129,11 +133,21 @@ const EditBlog = () => {
     };
 
     updateBlog(id, newBlog)
-      .then((res) => handleNavigate())
-      .catch((error) => console.log(error));
+      .then((res) => {
+        handleNavigate();
+        dispatch(
+          openModal({ type: SUCCESS, message: "Blog is successfuly Updated !" })
+        );
+      })
+      .catch((error) => {
+        dispatch(
+          openModal({
+            type: ERROR,
+            message: "Blog could not be Updated !",
+          })
+        );
+      });
   };
-
-  console.log(blog.category, "category");
 
   return (
     <div className="blog-portal-wrapper">
@@ -158,10 +172,13 @@ const EditBlog = () => {
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 label="Category"
-                onChange={handleChange}
-                value={blog?.category}
-                renderValue={(Selected) => Selected}
+                renderValue={(selected) => selected}
+                // onChange={handleChange}
+                // defaultValue={blog?.category}
               >
+                <MenuItem selected={true} hidden={true}>
+                  {blog?.category}
+                </MenuItem>
                 {categories.map((cate) => (
                   <MenuItem value={cate} key={cate}>
                     {cate}
@@ -183,7 +200,7 @@ const EditBlog = () => {
               </Stack>
               <Stack direction={"row"} spacing={1}>
                 {tags?.map((tag) => (
-                  <Chip label={`#${tag}`} />
+                  <Chip label={`#${tag}`} key={tag} />
                 ))}
               </Stack>
             </Stack>
@@ -249,14 +266,16 @@ const EditBlog = () => {
               >
                 Update
               </Button>
-              <Button variant="outlined" color="warning">
+              <Button
+                variant="outlined"
+                color="warning"
+                onClick={() => handleNavigate()}
+              >
                 Discard
               </Button>
             </>
           )}
         </Stack>
-
-        {/* <Alerts open={success} handleClose={() => setSuccess(!success)} /> */}
       </div>
     </div>
   );

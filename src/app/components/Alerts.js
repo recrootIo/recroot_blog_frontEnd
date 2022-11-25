@@ -1,36 +1,37 @@
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import { SUCCESS, ERROR } from "./constants";
-import PropTypes from "prop-types";
+import { SUCCESS } from "./constants";
 import * as React from "react";
+import { closeModal } from "../store/messagesSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const Alerts = ({ ...props }) => {
-  const { type, open, handleClose } = props;
+const Alerts = () => {
+  const dispatch = useDispatch();
+  const {
+    open,
+    message,
+    type = SUCCESS,
+  } = useSelector((state) => state.message);
+
   return (
-    <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-      <Alert onClose={handleClose} severity={type} sx={{ width: "100%" }}>
-        This is a success message!
+    <Snackbar
+      open={open}
+      autoHideDuration={6000}
+      onClose={() => dispatch(closeModal())}
+    >
+      <Alert
+        onClose={() => dispatch(closeModal())}
+        severity={type}
+        sx={{ width: "100%" }}
+      >
+        {message}
       </Alert>
     </Snackbar>
   );
 };
 
-Alerts.defaultProps = {
-  type: SUCCESS,
-  open: false,
-  handleClose: () => {},
-  autoHide: 6000,
-  message: "Success",
-};
-Alerts.propTypes = {
-  type: PropTypes.oneOf([SUCCESS, ERROR]),
-  open: PropTypes.bool,
-  handleClose: PropTypes.func,
-  autoHide: PropTypes.number,
-  message: PropTypes.string,
-};
 export default Alerts;

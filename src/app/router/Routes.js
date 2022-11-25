@@ -10,4 +10,5 @@ export const ROUTES = {
   PROFILE: (userId) => `/writer/${userId}/`,
   CREATE_BLOG: "/blogs/create",
   EDIT_BLOG: `/blogs/edit/:id`,
+  CREATE_CATEGORY: "/blogs/category",
 };

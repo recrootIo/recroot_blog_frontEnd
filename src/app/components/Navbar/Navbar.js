@@ -4,8 +4,7 @@ import { ROUTES } from "../../router/Routes";
 import "./index.css";
 import EditIcon from "@mui/icons-material/Edit";
 import HomeIcon from "@mui/icons-material/Home";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import SettingsIcon from "@mui/icons-material/Settings";
+import MapsUgcIcon from "@mui/icons-material/MapsUgc";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { styled, Typography } from "@mui/material";
 
@@ -30,6 +29,14 @@ const Navbar = () => {
             <HomeIcon color="primary" fontSize="medium" />
             <Typography variant="subtitle2" color="white">
               Blogs
+            </Typography>
+          </nav>
+        </Link>
+        <Link to={ROUTES.CREATE_CATEGORY}>
+          <nav>
+            <MapsUgcIcon color="primary" fontSize="medium" />
+            <Typography variant="subtitle2" color="white">
+              Category
             </Typography>
           </nav>
         </Link>
