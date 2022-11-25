@@ -109,7 +109,7 @@ const BlogCard = ({ ...props }) => {
             <Typography variant="body2">{category}</Typography>
           </Stack>
           <Stack direction={"row"} spacing={1}>
-            {tags.map((tag) => (
+            {tags[0]?.split(",").map((tag) => (
               <Chip label={`#${tag}`} key={tag} />
             ))}
           </Stack>

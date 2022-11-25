@@ -7,13 +7,14 @@ const useBlogs = () => {
    * @returns
    */
   const createBlogs = async (data) => {
-    const { title, description, tags, blogImage } = data;
+    const { title, description, tags, blogImage, category } = data;
 
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("tags", tags);
     formData.append("blogs", blogImage);
+    formData.append("category", category);
 
     return await axios.post(`addBlogs`, formData, {
       headers: {
@@ -43,7 +44,7 @@ const useBlogs = () => {
    * @param {*} id
    */
   const updateBlog = async (id, data) => {
-    const { title, description, tags, blogImage, blogs } = data;
+    const { title, description, tags, blogImage, blogs, category } = data;
 
     const formData = new FormData();
     formData.append("title", title);
@@ -51,6 +52,7 @@ const useBlogs = () => {
     formData.append("tags", tags);
     formData.append("blogImage", blogImage);
     formData.append("blogs", blogs);
+    formData.append("category", category);
 
     return await axios.put(`editBlogs/${id}`, formData, {
       headers: {

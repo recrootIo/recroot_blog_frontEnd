@@ -38,6 +38,7 @@ const EditBlog = () => {
   const [manualTag, setManualTag] = useState("");
   const [imageFile, setImageFile] = useState("");
   const [loading, setLoading] = useState(false);
+  const [tags, setTags] = useState([]);
 
   const { getBlog, updateBlog } = useBlogs();
   const { getAllCategories } = useCategory();
@@ -57,7 +58,7 @@ const EditBlog = () => {
   useEffect(() => {
     if (isEmpty(categories)) {
       getAllCategories()
-        .then((res) => setCategories(() => res.data))
+        .then((res) => setCategories(() => res.data.map((r) => r?.category)))
         .catch((error) => console.warn(error));
     }
   }, [getAllCategories, categories]);
@@ -67,8 +68,8 @@ const EditBlog = () => {
    * @param {*} e
    */
   const handleChange = (e) => {
-    console.log(e.target.value);
-    setSelectedCate();
+    console.log(e);
+    // setSelectedCate(e);
   };
 
   /**
@@ -76,10 +77,7 @@ const EditBlog = () => {
    */
   const addTags = () => {
     if (manualTag) {
-      setBlog((state) => ({
-        ...state,
-        tags: [...state.tags, manualTag],
-      }));
+      setTags((state) => [...state, manualTag]);
       setManualTag("");
     }
   };
@@ -98,6 +96,7 @@ const EditBlog = () => {
     setLoading(true);
     getBlog(id).then((res) => {
       setBlog(() => res.data[0]);
+      setTags(() => res.data[0]?.tags[0]?.split(","));
       setLoading(false);
     });
   };
@@ -126,12 +125,15 @@ const EditBlog = () => {
       ...blog,
       blogImage: blog?.blogImage,
       blogs: imageFile,
+      tags: tags,
     };
 
     updateBlog(id, newBlog)
       .then((res) => handleNavigate())
       .catch((error) => console.log(error));
   };
+
+  console.log(blog.category, "category");
 
   return (
     <div className="blog-portal-wrapper">
@@ -157,11 +159,12 @@ const EditBlog = () => {
                 id="demo-simple-select"
                 label="Category"
                 onChange={handleChange}
-                value={selectedCate?.category || blog?.category}
+                value={blog?.category}
+                renderValue={(Selected) => Selected}
               >
                 {categories.map((cate) => (
-                  <MenuItem value={cate} key={cate?._id}>
-                    {cate?.category || cate?._id}
+                  <MenuItem value={cate} key={cate}>
+                    {cate}
                   </MenuItem>
                 ))}
               </Select>
@@ -179,7 +182,7 @@ const EditBlog = () => {
                 <Button onClick={() => addTags()}>Add</Button>
               </Stack>
               <Stack direction={"row"} spacing={1}>
-                {blog?.tags?.map((tag) => (
+                {tags?.map((tag) => (
                   <Chip label={`#${tag}`} />
                 ))}
               </Stack>

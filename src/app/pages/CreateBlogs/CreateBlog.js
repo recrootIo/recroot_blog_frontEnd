@@ -62,7 +62,13 @@ const CreateBlog = () => {
    * Action to create a blog
    */
   const createBlog = () => {
-    createBlogs({ title, description, tags, blogImage: acceptedFiles[0] })
+    createBlogs({
+      title,
+      description,
+      tags,
+      blogImage: acceptedFiles[0],
+      category: selectedCate?.category,
+    })
       .then((res) => {
         setSuccess(true);
         handleNavigate();
@@ -116,7 +122,7 @@ const CreateBlog = () => {
                 id="demo-simple-select"
                 label="Category"
                 onChange={handleChange}
-                value={selectedCate?.category || selectedCate?._id}
+                value={selectedCate?.category}
               >
                 {categories.map((cate) => (
                   <MenuItem value={cate} key={cate?._id}>
