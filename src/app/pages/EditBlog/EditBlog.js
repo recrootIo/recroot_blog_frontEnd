@@ -12,7 +12,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import ReactQuill from "react-quill";
 import EditorToolbar, { modules } from "../../components/Editors/EditorToolbar";
@@ -96,20 +96,20 @@ const EditBlog = () => {
   /**
    *
    */
-  const getBlogging = () => {
+  const getBlogging = useCallback(() => {
     setLoading(true);
     getBlog(id).then((res) => {
       setBlog(() => res.data[0]);
       setTags(() => res.data[0]?.tags[0]?.split(","));
       setLoading(false);
     });
-  };
+  }, [setBlog, getBlog, id]);
 
   useEffect(() => {
     if (isEmpty(blog)) {
       getBlogging();
     }
-  }, []);
+  }, [blog, getBlogging]);
 
   const setDescription = (e) => {
     setBlog((state) => ({

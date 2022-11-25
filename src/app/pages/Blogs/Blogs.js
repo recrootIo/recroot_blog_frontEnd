@@ -1,14 +1,18 @@
 import { Box, CircularProgress, Pagination, Stack } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import "./index.css";
 import SearchIcon from "@mui/icons-material/Search";
 import BlogCard from "../../components/BlogCards/BlogCard";
 import axios from "../../API/axios";
 import useBlogs from "../../Hooks/useBlogs";
+import { useDispatch } from "react-redux";
+import { openModal } from "../../store/messagesSlice";
+import { ERROR, SUCCESS } from "../../components/constants";
 
 const Blogs = () => {
   const { deleteBlogs } = useBlogs();
+  const dispatch = useDispatch();
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -17,19 +21,31 @@ const Blogs = () => {
   const [search, setSearch] = useState("");
 
   /**
-   *
+   * Action to get all the blogs
    * @param {*} pageNumber
    */
-  const getBlogs = (pageNumber) => {
-    setLoading(true);
-    axios.get(`getAllBlogs?page=${pageNumber}&search=${search}`).then((res) => {
-      const { currentPage, posts, totalPages } = res.data;
-      setTotalPages(() => totalPages);
-      setPosts(() => posts);
-      setPage(() => currentPage);
-      setLoading(false);
-    });
-  };
+  const getBlogs = useCallback(
+    (pageNumber) => {
+      setLoading(true);
+      axios
+        .get(`getAllBlogs?page=${pageNumber}&search=${search}`, {
+          headers: {
+            "Cache-Control": "no-cache",
+          },
+        })
+        .then((res) => {
+          const { currentPage, posts, totalPages } = res.data;
+          setTotalPages(() => totalPages);
+          setPosts(() => [...posts]);
+          setPage(() => currentPage);
+          setLoading(false);
+        })
+        .catch(() =>
+          openModal({ type: ERROR, message: "Blogs could not be Loaded!" })
+        );
+    },
+    [search]
+  );
 
   /**
    *
@@ -42,7 +58,7 @@ const Blogs = () => {
   };
 
   /**
-   *
+   * Action to delete a blog
    * @param {*} id
    */
   const deleteBlog = (id) => {
@@ -55,13 +71,18 @@ const Blogs = () => {
           getBlogs(page);
         }
         setLoading(false);
+        dispatch(
+          openModal({ type: SUCCESS, message: "Blog is deleted successfuly" })
+        );
       })
-      .catch((res) => console.log(res));
+      .catch((res) =>
+        openModal({ type: ERROR, message: "Blog could not be deleted!" })
+      );
   };
 
   useEffect(() => {
     getBlogs(1);
-  }, []);
+  }, [getBlogs]);
 
   return (
     <div>

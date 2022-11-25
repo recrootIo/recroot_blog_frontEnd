@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./index.css";
 import Navbar from "../../components/Navbar/Navbar";
-import { Box, Button, CircularProgress, Stack, TextField } from "@mui/material";
+import { Button, Stack, TextField } from "@mui/material";
 import useCategory from "../../Hooks/useCategory";
 import { useDispatch } from "react-redux";
 import { openModal } from "../../store/messagesSlice";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../router/Routes";
 import "./index.css";
 import EditIcon from "@mui/icons-material/Edit";
@@ -7,12 +7,30 @@ import HomeIcon from "@mui/icons-material/Home";
 import MapsUgcIcon from "@mui/icons-material/MapsUgc";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { styled, Typography } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { openModal } from "../../store/messagesSlice";
+import { SUCCESS } from "../constants";
 
 const StyledNav = styled("nav")({
   fontSize: "13px",
 });
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const navigation = useNavigate();
+
+  /**
+   * Action to Loggout
+   */
+  const actionLogout = () => {
+    console.log("clied");
+    localStorage.removeItem("User");
+    dispatch(
+      openModal({ title: SUCCESS, message: "Logged out successfully!" })
+    );
+    navigation(`${ROUTES.LOGIN}`);
+  };
+
   return (
     <div>
       <div className={`Navbar Navbar-end`} id="Navbar">
@@ -40,10 +58,14 @@ const Navbar = () => {
             </Typography>
           </nav>
         </Link>
-        <Link to={ROUTES.LOGOUT}>
+        <Link>
           <nav>
             <ExitToAppIcon color="primary" fontSize="medium" />
-            <Typography variant="subtitle2" color="white">
+            <Typography
+              variant="subtitle2"
+              color="white"
+              onClick={() => actionLogout()}
+            >
               Logout
             </Typography>
           </nav>

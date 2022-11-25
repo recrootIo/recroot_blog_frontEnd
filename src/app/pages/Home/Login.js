@@ -9,12 +9,16 @@ import {
 import React, { useState } from "react";
 import Layout from "./Layout";
 import "./index.css";
-import axios from "axios";
+import axios from "../../API/axios";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../router/Routes";
+import { useDispatch } from "react-redux";
+import { openModal } from "../../store/messagesSlice";
+import { ERROR, SUCCESS } from "../../components/constants";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [user, setUser] = useState({
     email: "",
@@ -29,17 +33,23 @@ const Login = () => {
     }));
   };
 
+  /**
+   * Action to login
+   */
   const Login = () => {
     axios
-      .post("http://localhost:3000/bloglogin", user)
-      .then(function (response) {
+      .post("/bloglogin", user)
+      .then((response) => {
         if (response.data.token) {
           localStorage.setItem("User", JSON.stringify(response.data));
         }
         navigate(ROUTES.BLOGS, { replace: true });
+        dispatch(
+          openModal({ type: SUCCESS, message: "Logged in successfully!" })
+        );
       })
       .catch(function (error) {
-        console.log(error);
+        dispatch(openModal({ type: ERROR, message: "Login Failed" }));
       });
   };
 
@@ -68,6 +78,7 @@ const Login = () => {
                 name="password"
                 value={user.password}
                 onChange={onChange}
+                type="password"
               />
             </FormControl>
             <Button onClick={Login}>Login</Button>

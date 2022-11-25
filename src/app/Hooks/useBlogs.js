@@ -19,6 +19,7 @@ const useBlogs = () => {
     return await axios.post(`addBlogs`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
+        "Cache-Control": "no-cache",
       },
     });
   };

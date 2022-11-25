@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { SUCCESS } from "../components/constants";
 
 const initialValues = {
-  open: true,
+  open: false,
   message: "",
   type: SUCCESS,
 };
@@ -23,7 +23,7 @@ const messageSlice = createSlice({
     closeModal: (state) => {
       state.message = "";
       state.open = false;
-      state.type = "";
+      state.type = SUCCESS;
     },
   },
 });
