@@ -71,7 +71,7 @@ const CreateBlog = () => {
       description,
       tags,
       blogImage: acceptedFiles[0],
-      category: selectedCate?.category,
+      category: selectedCate,
     })
       .then((res) => {
         setSuccess(true);
@@ -136,11 +136,11 @@ const CreateBlog = () => {
                 id="demo-simple-select"
                 label="Category"
                 onChange={handleChange}
-                value={selectedCate?.category}
+                value={selectedCate}
               >
                 {categories.map((cate) => (
-                  <MenuItem value={cate} key={cate?._id}>
-                    {cate?.category || cate?._id}
+                  <MenuItem value={cate?._id} key={cate?._id}>
+                    {cate?.category}
                   </MenuItem>
                 ))}
               </Select>

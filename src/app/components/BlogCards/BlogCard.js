@@ -106,7 +106,7 @@ const BlogCard = ({ ...props }) => {
         <Stack spacing={3}>
           <Stack direction={"row"} justifyContent={"space-between"}>
             <Typography variant="h6">{title}</Typography>
-            <Typography variant="body2">{category}</Typography>
+            <Typography variant="body2">{category.category}</Typography>
           </Stack>
           <Stack direction={"row"} spacing={1}>
             {tags[0]?.split(",").map((tag) => (
